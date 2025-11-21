@@ -10,13 +10,10 @@ export default class MarvelService {
 
     static init = async () => {
         const instance = new MarvelService();
-        if(!this.APIData && !this._loadingPromise){
+        if(!(this._APIData || this._loadingPromise )){
             this._loadingPromise = instance.getDataFromAPI(`${instance._domain}/characters?apikey=${instance._key}`)
             .then((res) => {
-                this.APIData = res;
-            })
-            .finally(() => {
-                this._loadingPromise = null; 
+                this._APIData = res;
             })
         }
         await this._loadingPromise;          
@@ -27,7 +24,7 @@ export default class MarvelService {
         const response = await fetch(url)
 
         if(!response.ok){
-            throw new Error(`Error during request sending to API`);
+            throw new Error(`Error during request sending to API: ${response.status} `);
         }
 
         return await response.json();
@@ -36,20 +33,22 @@ export default class MarvelService {
     chooseRandCharact = () => {
         
         const findCharact = () => {
-            const id = Math.floor(Math.random() * MarvelService.APIData.data.results.length);
-            if(!MarvelService.APIData.data.results[id-1]){
+            const id = Math.floor(Math.random() * MarvelService._APIData.data.results.length);
+            if(!MarvelService._APIData.data.results[id-1]){
                 return findCharact();
             } else {
-                return MarvelService.APIData.data.results[id-1]
+                return MarvelService._APIData.data.results[id-1]
             }
         }
 
         const character = findCharact();
 
         return {
-            name: character.name,
+            name: character.name || 'noname',
             descr: character.description || 'no description',
-            img: `${character.thumbnail.path}.${character.thumbnail.extension}`
+            img: `${character.thumbnail.path}.${character.thumbnail.extension}`,
+            homepage: character.urls[0],
+            wiki: character.urls[1]
         }
     }
 }

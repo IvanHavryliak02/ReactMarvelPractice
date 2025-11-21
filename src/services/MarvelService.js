@@ -24,7 +24,7 @@ export default class MarvelService {
         const response = await fetch(url)
 
         if(!response.ok){
-            throw new Error(`Error during request sending to API: ${response.status} `);
+            throw new Error(`Error during request sending to API: ${response.status}`);
         }
 
         return await response.json();
@@ -50,5 +50,15 @@ export default class MarvelService {
             homepage: character.urls[0],
             wiki: character.urls[1]
         }
+    }
+
+    getCharactById = (id) => {
+        if(!MarvelService._APIData){
+            throw new Error(`Method getCharactById can't find API data`)
+        }
+        if(!MarvelService._APIData.data.results[id-1]){
+            throw new Error(`Method getCharactById can't find character with id: ${id}`)
+        }
+        return MarvelService._APIData.data.results[id-1];
     }
 }

@@ -7,9 +7,7 @@ import {Component} from 'react';
 
 class RandomChar extends Component{
 
-    constructor(props){
-        super(props)
-        this.marvelService = null;
+    componentDidMount(){
         this.charactInit();
     }
 
@@ -60,7 +58,7 @@ class RandomChar extends Component{
                     <p className="randomchar__title">
                         Or choose another one
                     </p>
-                    <button onClick={() => this.onCharactChange()} className="button button__main">
+                    <button onClick={this.onCharactChange} className="button button__main">
                         <div className="inner">try it</div>
                     </button>
                     <img src={mjolnir} alt="decoration" className="randomchar__decoration"/>

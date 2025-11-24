@@ -44,7 +44,11 @@ export default class CharList extends Component {
         try {
             const characters = [], marvelService = this.marvelService;
             for(let id = 1; id <= 9; id++){
-                characters.push(marvelService.getCharactById(id)) 
+                const character = marvelService.getCharactById(id)
+                if(!character) {
+                    continue;
+                }
+                characters.push(character) 
             }
             this.setState({
                 characters
@@ -56,10 +60,14 @@ export default class CharList extends Component {
     }
 
     createCards = () => {
+        const {onChoosedCharact} = this.props
         return this.state.characters.map((item) => {
             const imgSrc = `${item.thumbnail.path}.${item.thumbnail.extension}`
             return (
-                <li className="char__item" key={item.id}>
+                <li className="char__item" 
+                    key={item.id}
+                    onClick={() => {onChoosedCharact(item.id)}}
+                >
                     <img src={imgSrc} alt="character"/>
                     <div className="char__name">{item.name}</div>
                 </li>

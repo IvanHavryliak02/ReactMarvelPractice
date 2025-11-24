@@ -54,10 +54,10 @@ export default class MarvelService {
 
     getCharactById = (id) => {
         if(!MarvelService._APIData){
-            throw new Error(`Method getCharactById can't find API data`)
+            throw new Error(`Method getCharactById can't find API data. It's must be empty or unreachable`)
         }
         if(!MarvelService._APIData.data.results[id-1]){
-            throw new Error(`Method getCharactById can't find character with id: ${id}`)
+            return null;
         }
         return MarvelService._APIData.data.results[id-1];
     }

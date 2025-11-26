@@ -10,6 +10,9 @@ export default class CharList extends Component {
         characters: [],
         loading: true,
         error: false,
+        firstCharacterId: 1,
+        lastCharacterId: 9,
+        buttonHidden: false,
     }
 
     componentDidMount = () => {
@@ -42,17 +45,26 @@ export default class CharList extends Component {
 
     createCardsArr = () => {
         try {
-            const characters = [], marvelService = this.marvelService;
-            for(let id = 1; id <= 9; id++){
+            const newCharacters = [], marvelService = this.marvelService;
+            for(let id = this.state.firstCharacterId; id <= this.state.lastCharacterId; id++){
                 const character = marvelService.getCharactById(id)
                 if(!character) {
                     continue;
                 }
-                characters.push(character) 
+                newCharacters.push(character) 
             }
-            this.setState({
-                characters
-            })
+            if(newCharacters.length > 0) {
+                let hideButton = false;
+                if(newCharacters.length < 7) {
+                    hideButton = true;
+                }
+                this.setState(() => ({
+                    characters: [...this.state.characters, ...newCharacters],
+                    firstCharacterId: this.state.lastCharacterId + 1,
+                    lastCharacterId: this.state.lastCharacterId + 9,
+                    buttonHidden: hideButton
+                }))
+            }
         }catch(err){
             this.onErrorOccured();
             console.error(err);
@@ -81,19 +93,27 @@ export default class CharList extends Component {
         const content = charactersCards.length ? charactersCards : null;
         const error = this.state.error ? <Error/> : null;
         const loading = this.state.loading ? <Spinner/> : null;
-
+        const button = this.state.buttonHidden ? null : <Button onClickCallback={this.createCardsArr}/>
         return (
             <div className="char__list">
+                {error}
+                {loading}
                 <ul className="char__grid">
-                    {content}
-                    {error}
-                    {loading}
+                    {content}    
                 </ul>
-                <button className="button button__main button__long">
-                    <div className="inner">load more</div>
-                </button>
+                {button}
             </div>
         )
     }
+
     
+    
+}
+
+const Button = ({onClickCallback}) => {
+    return (
+        <button onClick={onClickCallback} className="button button__main button__long">
+            <div className="inner">load more</div>
+        </button>
+    )
 }

@@ -13,6 +13,7 @@ export default class CharList extends Component {
         firstCharacterId: 1,
         lastCharacterId: 9,
         buttonHidden: false,
+        choosedItemId: null
     }
 
     componentDidMount = () => {
@@ -75,10 +76,18 @@ export default class CharList extends Component {
         const {onChoosedCharact} = this.props
         return this.state.characters.map((item) => {
             const imgSrc = `${item.thumbnail.path}.${item.thumbnail.extension}`
+            let selector = 'char__item '
+            selector += item.id === this.state.choosedItemId ? "char__item_selected" : ''
             return (
-                <li className="char__item" 
+                <li className={selector} 
                     key={item.id}
-                    onClick={() => {onChoosedCharact(item.id)}}
+                    onClick={ () => {
+                        onChoosedCharact(item.id)
+                        this.setState({
+                            choosedItemId: item.id
+                        })
+                    }}
+                    tabIndex={item.id}
                 >
                     <img src={imgSrc} alt="character"/>
                     <div className="char__name">{item.name}</div>

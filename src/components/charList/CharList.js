@@ -1,54 +1,46 @@
 import './charList.scss';
-import { Component } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import MarvelService from '../../services/MarvelService'
 import Spinner from '../spinner/Spinner'
 import Error from '../error/Error'
 
-export default class CharList extends Component {
+export default function CharList(props) {
 
-    state = {
-        characters: [],
-        loading: true,
-        error: false,
-        firstCharacterId: 1,
-        lastCharacterId: 9,
-        buttonHidden: false,
-        choosedItemId: null
+    const [characters, setCharacters] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(false)
+    const [firstCharacterId, setFirstCharacterId] = useState(1)
+    const [lastCharacterId, setLastCharacterId] = useState(9)
+    const [buttonHidden, setButtonHidden] = useState(false)
+
+    const serviceRef = useRef(null)
+
+    useEffect(() => {
+        serviceInit();
+    }, [])
+
+    function onErrorOccured() {
+        setLoading(false);
+        setError(true)
     }
 
-    componentDidMount = () => {
-        this.serviceInit();
-    }
-
-    onLoadingFinished = () => {
-        this.setState({
-            loading: false,
-        })
-    }
-
-    onErrorOccured = () => {
-        this.setState({
-            loading: false,
-            error: true
-        })
-    }
-
-    serviceInit = async () => {
+    async function serviceInit() {
         try{
-            this.marvelService = await MarvelService.init();
-            this.createCardsArr();
-            this.onLoadingFinished();
+            serviceRef.current = await MarvelService.init();
+            createCardsArr();
+            setLoading(false);
         }catch(err){
-            this.onErrorOccured();
+            onErrorOccured();
             console.error(`Error during Marvel Service initialistaion in ChartList component`);
+            console.error(err)
         }
     }
 
-    createCardsArr = () => {
+    function createCardsArr() {
         try {
-            const newCharacters = [], marvelService = this.marvelService;
-            for(let id = this.state.firstCharacterId; id <= this.state.lastCharacterId; id++){
-                const character = marvelService.getCharactById(id)
+            const newCharacters = [];
+            for(let id = firstCharacterId; id <= lastCharacterId; id++){
+                const character = serviceRef.current.getCharactById(id)
                 if(!character) {
                     continue;
                 }
@@ -59,33 +51,28 @@ export default class CharList extends Component {
                 if(newCharacters.length < 7) {
                     hideButton = true;
                 }
-                this.setState(() => ({
-                    characters: [...this.state.characters, ...newCharacters],
-                    firstCharacterId: this.state.lastCharacterId + 1,
-                    lastCharacterId: this.state.lastCharacterId + 9,
-                    buttonHidden: hideButton
-                }))
+                setCharacters(() => [...characters, ...newCharacters])
+                setFirstCharacterId(lastCharacterId + 1)
+                setLastCharacterId(lastCharacterId + 9)
+                setButtonHidden(hideButton)
             }
         }catch(err){
-            this.onErrorOccured();
+            onErrorOccured();
             console.error(err);
         }
     }
 
-    createCards = () => {
-        const {onChoosedCharact} = this.props
-        return this.state.characters.map((item) => {
+    function createCards () {
+        const {onChoosedCharact} = props
+        return characters.map((item) => {
             const imgSrc = `${item.thumbnail.path}.${item.thumbnail.extension}`
             let selector = 'char__item '
-            selector += item.id === this.state.choosedItemId ? "char__item_selected" : ''
+            selector += item.id === props.choosedCharactId ? "char__item_selected" : ''
             return (
                 <li className={selector} 
                     key={item.id}
                     onClick={ () => {
                         onChoosedCharact(item.id)
-                        this.setState({
-                            choosedItemId: item.id
-                        })
                     }}
                     tabIndex={item.id}
                 >
@@ -96,26 +83,23 @@ export default class CharList extends Component {
         })
     }
 
-    render(){
-
-        const charactersCards = this.createCards();
-        const content = charactersCards.length ? charactersCards : null;
-        const error = this.state.error ? <Error/> : null;
-        const loading = this.state.loading ? <Spinner/> : null;
-        const button = this.state.buttonHidden ? null : <Button onClickCallback={this.createCardsArr}/>
-        return (
-            <div className="char__list">
-                {error}
-                {loading}
-                <ul className="char__grid">
-                    {content}    
-                </ul>
-                {button}
-            </div>
-        )
-    }
-
     
+    const charactersCards = createCards();
+    const content = charactersCards.length ? charactersCards : null;
+    const errorComp = error ? <Error/> : null;
+    const loadingComp = loading ? <Spinner/> : null;
+    const button = buttonHidden ? null : <Button onClickCallback={createCardsArr}/>
+
+    return (
+        <div className="char__list">
+            {errorComp}
+            {loadingComp}
+            <ul className="char__grid">
+                {content}    
+            </ul>
+            {button}
+        </div>
+    )
     
 }
 

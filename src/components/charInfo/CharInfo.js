@@ -31,7 +31,7 @@ class CharInfo extends Component {
     }
 
     componentDidUpdate = (prevProps) => {
-        if(prevProps.charactId !== this.props.charactId) {
+        if(prevProps.charId !== this.props.charId) {
             this.getNewChar();
         }
     }
@@ -48,10 +48,10 @@ class CharInfo extends Component {
     }
 
     getNewChar = () => {
-        if(!this.props.charactId || !this.marvelService){
+        if(!this.props.charId || !this.marvelService){
             return
         }
-        const character = this.marvelService.getCharactById(this.props.charactId);
+        const character = this.marvelService.getCharactById(this.props.charId);
         this.setState({
             character
         })

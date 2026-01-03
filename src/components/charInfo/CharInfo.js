@@ -1,75 +1,64 @@
-import { Component } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './charInfo.scss';
 
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
 import MarvelService from '../../services/MarvelService';
 
-class CharInfo extends Component {
+function CharInfo({charId}) {
 
-    state = {
-        character: null,
-        loading: true,
-        error: false
+    const [character, setCharacter] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(false)
+
+    const serviceRef = useRef(null)
+
+    function onContentLoaded() {
+        setLoading(false)
     }
 
-    onContentLoaded = () => {
-        this.setState({
-            loading: false
-        })
+    function onErrorOccurred() {
+        setLoading(false)
+        setError(true)
     }
 
-    onErrorOccurred = () => {
-        this.setState({
-            loading: false,
-            error: true
-        })
-    }
+    useEffect(() => {
+        serviceInit()
+    }, [])
 
-    componentDidMount = () => {
-        this.serviceInit();
-    }
+    useEffect(() => {
+        getNewChar()
+    }, [charId])
 
-    componentDidUpdate = (prevProps) => {
-        if(prevProps.charId !== this.props.charId) {
-            this.getNewChar();
-        }
-    }
-
-    serviceInit = async () => {
+    async function serviceInit() {
         try{
-            this.marvelService = await MarvelService.init();
-            this.getNewChar();
-            this.onContentLoaded();
+            serviceRef.current = await MarvelService.init();
+            getNewChar();
+            onContentLoaded();
         }catch(err){
-            this.onErrorOccurred();
+            onErrorOccurred();
             console.error("Error during Marvel Service initialistaion in ChartInfo component")
+            console.error(err)
         }
     }
 
-    getNewChar = () => {
-        if(!this.props.charId || !this.marvelService){
-            return
-        }
-        const character = this.marvelService.getCharactById(this.props.charId);
-        this.setState({
-            character
-        })
+    function getNewChar() {
+        if(!serviceRef.current) {return}
+        const character = serviceRef.current.getCharactById(charId);
+        setCharacter(character)
     }
 
-    render() {
-        const { character } = this.state;
-        const content = character ? <Content character={character}/> : null
-        const loading = this.state.loading ? <Spinner/> : null 
-        const error = this.state.error  ? <Error/> : null   
-        return (
-            <div className="char__info">
-                {content}
-                {loading}
-                {error}
-            </div>
-        )
-    }
+
+    const content = character ? <Content character={character}/> : null
+    const loadingComp = loading ? <Spinner/> : null 
+    const errorComp = error  ? <Error/> : null   
+    return (
+        <div className="char__info">
+            {content}
+            {loadingComp}
+            {errorComp}
+        </div>
+    )
 
 }
 

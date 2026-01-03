@@ -1,5 +1,5 @@
 import './charList.scss';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef} from 'react';
 import MarvelService from '../../services/MarvelService'
 import Spinner from '../spinner/Spinner'
 import Error from '../error/Error'
@@ -14,6 +14,7 @@ export default function CharList(props) {
     const [buttonHidden, setButtonHidden] = useState(false)
 
     const serviceRef = useRef(null)
+    const cardRef = useRef(null)
 
     useEffect(() => {
         serviceInit();
@@ -58,6 +59,7 @@ export default function CharList(props) {
             }
         }catch(err){
             onErrorOccured();
+            console.error(`Error during cards creation in ChartList component`);
             console.error(err);
         }
     }
@@ -71,8 +73,13 @@ export default function CharList(props) {
             return (
                 <li className={selector} 
                     key={item.id}
-                    onClick={ () => {
+                    onFocus={(e) => {
                         onChoosedCharact(item.id)
+                        if(cardRef.current){
+                            cardRef.current.classList.remove('char__item_selected')  
+                        }
+                        e.currentTarget.classList.add('char__item_selected')
+                        cardRef.current = e.currentTarget
                     }}
                     tabIndex={item.id}
                 >

@@ -1,46 +1,23 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import './charInfo.scss';
 
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/useMarvelService';
 
 function CharInfo({charId}) {
 
     const [character, setCharacter] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(false)
-
-    const serviceRef = useRef(null)
-
-    function onContentLoaded() {
-        setLoading(false)
-    }
-
-    function onErrorOccurred() {
-        setLoading(false)
-        setError(true)
-    }
+    const {serviceInit, serviceRef, loading, error} = useMarvelService()
 
     useEffect(() => {
-        serviceInit()
+        serviceInit(getNewChar, 'CharInfo')
     }, [])
 
     useEffect(() => {
         getNewChar()
     }, [charId])
 
-    async function serviceInit() {
-        try{
-            serviceRef.current = await MarvelService.init();
-            getNewChar();
-            onContentLoaded();
-        }catch(err){
-            onErrorOccurred();
-            console.error("Error during Marvel Service initialistaion in ChartInfo component")
-            console.error(err)
-        }
-    }
 
     function getNewChar() {
         if(!serviceRef.current) {return}
@@ -48,8 +25,7 @@ function CharInfo({charId}) {
         setCharacter(character)
     }
 
-
-    const content = character ? <Content character={character}/> : null
+    const content = (character && !(loading || error)) ? <Content character={character}/> : null
     const loadingComp = loading ? <Spinner/> : null 
     const errorComp = error  ? <Error/> : null   
     return (

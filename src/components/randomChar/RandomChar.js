@@ -1,42 +1,28 @@
 import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png'
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/useMarvelService';
 import Spinner from '../spinner/Spinner'
 import Error from '../error/Error';
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect} from 'react';
 
 function RandomChar(){
 
     const [character, setCharacter] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(false)
-
-    const serviceRef = useRef(null)
+    const {serviceInit, serviceRef, loading, error} = useMarvelService()
 
     useEffect(() => {
-        charactInit();
-    }, [])
-
-    async function charactInit() {
-        try{
-            serviceRef.current = await MarvelService.init();
+        serviceInit(() => {
             const character = serviceRef.current.chooseRandCharact()
             setCharacter(character)
-            setLoading(false)
-        }catch(err){
-            setLoading(false)
-            setError(true)
-            console.error('Error during Marvel Service initialistion in RandomChar component')
-            console.error(err)
-        }
-    }
+        }, 'RandomChar');
+    }, [])
 
     function onCharactChange() {
         const character = serviceRef.current.chooseRandCharact()
         setCharacter(character)
     }
     
-    const content = !(loading || error) ? <View character={character}/> : null;
+    const content = (character && !(loading || error)) ? <View character={character}/> : null;
     const loadingComp = loading ? <Spinner/> : null;
     const errorComp = error ? <Error/> : null;
     return (

@@ -1,41 +1,22 @@
 import './charList.scss';
 import { useState, useEffect, useRef} from 'react';
-import MarvelService from '../../services/MarvelService'
 import Spinner from '../spinner/Spinner'
 import Error from '../error/Error'
+import useMarvelService from '../../services/useMarvelService';
 
 export default function CharList(props) {
 
     const [characters, setCharacters] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(false)
     const [firstCharacterId, setFirstCharacterId] = useState(1)
     const [lastCharacterId, setLastCharacterId] = useState(9)
     const [buttonHidden, setButtonHidden] = useState(false)
+    const {serviceInit, serviceRef, loading, error} = useMarvelService()
 
-    const serviceRef = useRef(null)
     const cardRef = useRef(null)
 
     useEffect(() => {
-        serviceInit();
+        serviceInit(createCardsArr, 'CharList');
     }, [])
-
-    function onErrorOccured() {
-        setLoading(false);
-        setError(true)
-    }
-
-    async function serviceInit() {
-        try{
-            serviceRef.current = await MarvelService.init();
-            createCardsArr();
-            setLoading(false);
-        }catch(err){
-            onErrorOccured();
-            console.error(`Error during Marvel Service initialistaion in ChartList component`);
-            console.error(err)
-        }
-    }
 
     function createCardsArr() {
         try {
@@ -58,7 +39,6 @@ export default function CharList(props) {
                 setButtonHidden(hideButton)
             }
         }catch(err){
-            onErrorOccured();
             console.error(`Error during cards creation in ChartList component`);
             console.error(err);
         }
@@ -90,9 +70,8 @@ export default function CharList(props) {
         })
     }
 
-    
     const charactersCards = createCards();
-    const content = charactersCards.length ? charactersCards : null;
+    const content = (charactersCards.length && !(loading || error)) ? charactersCards : null;
     const errorComp = error ? <Error/> : null;
     const loadingComp = loading ? <Spinner/> : null;
     const button = buttonHidden ? null : <Button onClickCallback={createCardsArr}/>

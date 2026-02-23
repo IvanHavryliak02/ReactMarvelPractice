@@ -19,6 +19,7 @@ export default function useMarvelService() {
         if(!(_APIData || _loadingPromise)){
             _loadingPromise = getDataFromAPI(`${_domain}/characters?apikey=${_key}`)
             .then((res) => {
+                console.log(res)
                 _APIData = res;
             })
         }

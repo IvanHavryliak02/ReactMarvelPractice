@@ -4,30 +4,48 @@ import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import ComicsList from "../comicsList/ComicsList";
 
 import decoration from '../../resources/img/vision.png';
 
 function App(){
 
     const [charId, setCharId] = useState(1);
+    const [choosedPage, setChoosedPage] = useState('Character');
 
     return (
         <div className="app">
-            <AppHeader/>
+            <AppHeader choosedPage={choosedPage} setChoosedPage={setChoosedPage}/>
             <main>
-                <ErrorBoundary>
-                    <RandomChar/>
-                </ErrorBoundary>
-                
-                <div className="char__content">
-                    <CharList onChoosedCharact={setCharId} charId={charId}/>
-                    <CharInfo charId={charId}/>
-                </div>
-                <img className="bg-decoration" src={decoration} alt="vision"/>
+                {choosedPage === 'Character' ? characterMain(setCharId, charId) : null}
+                {choosedPage === 'Comics' ? comicsMain() : null}
             </main>
         </div>
     )
     
+}
+
+function comicsMain() {
+    return (
+        <ComicsList/>
+    )
+}
+
+function characterMain(props) {
+    const {setCharId, charId} = props
+    return (
+        <>
+            <ErrorBoundary>
+                <RandomChar/>
+            </ErrorBoundary>
+            
+            <div className="char__content">
+                <CharList onChoosedCharact={setCharId} charId={charId}/>
+                <CharInfo charId={charId}/>
+            </div>
+            <img className="bg-decoration" src={decoration} alt="vision"/>
+        </>
+    )
 }
 
 export default App;

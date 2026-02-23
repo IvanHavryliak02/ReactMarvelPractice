@@ -15,12 +15,10 @@ function CharInfo({charId}) {
     }, [])
 
     useEffect(() => {
-        getNewChar()
+        if(serviceRef.current) {getNewChar()}
     }, [charId])
 
-
     function getNewChar() {
-        if(!serviceRef.current) {return}
         const character = serviceRef.current.getCharactById(charId);
         setCharacter(character)
     }

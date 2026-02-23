@@ -17,7 +17,7 @@ function App(){
         <div className="app">
             <AppHeader choosedPage={choosedPage} setChoosedPage={setChoosedPage}/>
             <main>
-                {choosedPage === 'Character' ? characterMain(setCharId, charId) : null}
+                {choosedPage === 'Character' ? characterMain({setCharId, charId}) : null}
                 {choosedPage === 'Comics' ? comicsMain() : null}
             </main>
         </div>

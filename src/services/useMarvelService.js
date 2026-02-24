@@ -17,15 +17,25 @@ export default function useMarvelService() {
     async function request() {
         
         if(!(_APIData || _loadingPromise)){
-            _loadingPromise = getDataFromAPI(`${_domain}/characters?apikey=${_key}`)
-            .then((res) => {
-                console.log(res)
-                _APIData = res;
+            _APIData = {};
+            _loadingPromise = Promise.all([
+                startPromise(`${_domain}/characters?apikey=${_key}`),
+                startPromise(`${_domain}/comics?apikey=${_key}`),
+            ]).then((resArr) => {
+                _APIData.characters = resArr[0].data.results
+                _APIData.comics = resArr[1].data.results
+            }).catch(err => {
+                throw new Error(err)
             })
         }
         await _loadingPromise;
         
         return {chooseRandCharact, getCharactById}
+
+        function startPromise(url){
+            return getDataFromAPI(url)
+            .then(res => res)
+        }
     }
 
     async function serviceInit(successCallback, componentName) {
@@ -42,7 +52,8 @@ export default function useMarvelService() {
 
     function chooseRandCharact() {
 
-        const APIRes = _APIData.data.results;
+        const APIRes = _APIData.characters;
+        console.log(APIRes)
         
         const findCharact = () => {
             const id = Math.floor(Math.random() * APIRes.length);
@@ -65,13 +76,14 @@ export default function useMarvelService() {
     }
 
     function getCharactById(id) {
-        if(!_APIData){
+        const APIRes = _APIData.characters;
+        if(!APIRes){
             throw new Error(`Method getCharactById can't find API data. It's must be empty or unreachable`)
         }
-        if(!_APIData.data.results[id-1]){
+        if(!APIRes[id-1]){
             return null;
         }
-        return _APIData.data.results[id-1];
+        return APIRes[id-1];
     }
 
     return {serviceInit, serviceRef, loading, error}

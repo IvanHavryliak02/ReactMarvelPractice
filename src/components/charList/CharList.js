@@ -22,7 +22,7 @@ export default function CharList(props) {
         try {
             const newCharacters = [];
             for(let id = firstCharacterId; id <= lastCharacterId; id++){
-                const character = serviceRef.current.getCharactById(id)
+                const character = serviceRef.current.getEntityById(id)
                 if(!character) {
                     continue;
                 }

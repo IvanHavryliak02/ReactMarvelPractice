@@ -32,7 +32,6 @@ function comicsMain() {
             <AppBanner/>
             <ComicsList/>
         </>
-        
     )
 }
 

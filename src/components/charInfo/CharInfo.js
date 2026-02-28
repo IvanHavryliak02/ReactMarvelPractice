@@ -19,7 +19,7 @@ function CharInfo({charId}) {
     }, [charId])
 
     function getNewChar() {
-        const character = serviceRef.current.getCharactById(charId);
+        const character = serviceRef.current.getEntityById(charId);
         setCharacter(character)
     }
 

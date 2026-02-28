@@ -22,15 +22,17 @@ export default function useMarvelService() {
                 startPromise(`${_domain}/characters?apikey=${_key}`),
                 startPromise(`${_domain}/comics?apikey=${_key}`),
             ]).then((resArr) => {
+                console.log('fetching...')
                 _APIData.characters = resArr[0].data.results
                 _APIData.comics = resArr[1].data.results
+                console.log(_APIData)
             }).catch(err => {
                 throw new Error(err)
             })
         }
         await _loadingPromise;
         
-        return {chooseRandCharact, getCharactById}
+        return {chooseRandCharact, getEntityById}
 
         function startPromise(url){
             return getDataFromAPI(url)
@@ -53,7 +55,6 @@ export default function useMarvelService() {
     function chooseRandCharact() {
 
         const APIRes = _APIData.characters;
-        console.log(APIRes)
         
         const findCharact = () => {
             const id = Math.floor(Math.random() * APIRes.length);
@@ -75,10 +76,10 @@ export default function useMarvelService() {
         }
     }
 
-    function getCharactById(id) {
-        const APIRes = _APIData.characters;
+    function getEntityById(id, entity) {
+        const APIRes = entity === 'comics' ? _APIData.comics : _APIData.characters;
         if(!APIRes){
-            throw new Error(`Method getCharactById can't find API data. It's must be empty or unreachable`)
+            throw new Error(`Method getEntityById can't find ${entity === 'comics' ? 'comics' : 'character' }. It's must be empty or unreachable`)
         }
         if(!APIRes[id-1]){
             return null;

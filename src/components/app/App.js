@@ -20,22 +20,14 @@ function App(){
         <div className="app">
             <AppHeader choosedPage={choosedPage} setChoosedPage={setChoosedPage}/>
             <main>
+                {choosedPage === 'Comics' || choosedPage === 'SingleComic' ? <AppBanner/> : null}
                 {choosedPage === 'Character' ? <CharacterMain setCharId={setCharId} charId={charId}/> : null}
-                {choosedPage === 'Comics' ? <ComicsMain setChoosedPage={setChoosedPage} setComicObj={setComicObj}/> : null}
+                {choosedPage === 'Comics' ? <ComicsList setChoosedPage={setChoosedPage} setComicObj={setComicObj}/> : null}
                 {choosedPage === 'SingleComic' ? <SingleComic setChoosedPage={setChoosedPage} comicObj={comicObj}/> : null}
             </main>
         </div>
     )
     
-}
-
-function ComicsMain({setChoosedPage, setComicObj}) {
-    return (
-        <>
-            <AppBanner/>
-            <ComicsList setChoosedPage = {setChoosedPage} setComicObj={setComicObj}/>
-        </>
-    )
 }
 
 function CharacterMain({setCharId, charId}) {

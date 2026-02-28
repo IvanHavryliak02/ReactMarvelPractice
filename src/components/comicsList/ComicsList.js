@@ -4,7 +4,7 @@ import useMarvelService from '../../services/useMarvelService'
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
 
-const ComicsList = () => {
+const ComicsList = ({setChoosedPage, setComicObj}) => {
 
     const {loading, error, serviceRef, serviceInit} = useMarvelService();
     const [comicsList, setComicsList] = useState(null);
@@ -31,7 +31,6 @@ const ComicsList = () => {
 
         for(let i = firstId; i <= lastId; i++){
             const comic = serviceRef.current.getEntityById(i, 'comics')
-            console.log(i)
             if (comic === null) {
                 emptyCounter++
             } else {
@@ -47,18 +46,27 @@ const ComicsList = () => {
         setComicsList(prevRes => [...(prevRes || []), ...res])
     }
 
-    function createListItem(comics) {
+    function createListItem(comic) {
 
-        if(!comics) { return }
+        if(!comic) { return }
 
-        const {title, prices, thumbnail, id} = comics
+        const {title, prices, thumbnail, id} = comic
 
         const price = prices[0].price.toFixed(2)
         
         return (
-            <li className="comics__item" key = {id}>
+            <li 
+                className="comics__item" 
+                key = {id} 
+                onClick={
+                    () => {
+                        setChoosedPage('SingleComic')
+                        setComicObj(comic)
+                    }
+                }
+            >
                 <a href="#">
-                    <img src={`${thumbnail.path}.${thumbnail.extension}`} alt="comics" className="comics__item-img"/>
+                    <img src={`${thumbnail.path}.${thumbnail.extension}`} alt="comic" className="comics__item-img"/>
                     <div className="comics__item-name">{title}</div>
                     <div className="comics__item-price">{`${price} $`}</div>
                 </a>

@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import useMarvelService from '../../services/useMarvelService'
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
+import { NavLink } from 'react-router';
 
-const ComicsList = ({setChoosedPage, setComicObj}) => {
+const ComicsList = ({setComicObj}) => {
 
     const {loading, error, serviceRef, serviceInit} = useMarvelService();
     const [comicsList, setComicsList] = useState(null);
@@ -60,16 +61,15 @@ const ComicsList = ({setChoosedPage, setComicObj}) => {
                 key = {id} 
                 onClick={
                     () => {
-                        setChoosedPage('SingleComic')
                         setComicObj(comic)
                     }
                 }
             >
-                <a href="#">
+                <NavLink to='/comic'>
                     <img src={`${thumbnail.path}.${thumbnail.extension}`} alt="comic" className="comics__item-img"/>
                     <div className="comics__item-name">{title}</div>
                     <div className="comics__item-price">{`${price} $`}</div>
-                </a>
+                </NavLink>
             </li>
         )
     }

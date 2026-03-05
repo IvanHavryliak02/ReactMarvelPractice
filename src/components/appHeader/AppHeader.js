@@ -1,16 +1,9 @@
 import './appHeader.scss';
-import React from 'react';
+import { NavLink } from "react-router";
 
-const AppHeader = ({choosedPage, setChoosedPage}) => {
 
-    const pageNames = ['Character', 'Comics']
+const AppHeader = () => {
 
-    const createLI = (name) => {
-        const selector = choosedPage.toLowerCase() === name.toLowerCase() ? 'choosed' : ''
-        return <li className={selector} onClick={() => setChoosedPage(name)}>
-                    <a href="#">{name}</a>
-                </li>
-    }
 
     return (
         <header className="app__header">
@@ -21,12 +14,31 @@ const AppHeader = ({choosedPage, setChoosedPage}) => {
             </h1>
             <nav className="app__menu">
                 <ul>
-                    {pageNames.map((item, i) => 
-                        <React.Fragment key={item}>
-                            {createLI(item)}
-                            {i < pageNames.length - 1 ? '/' : null}
-                        </React.Fragment>
-                    )}
+                    <li>
+                        <NavLink 
+                            to='/'
+                            end
+                            style={({ isActive }) => ({
+                                    color: isActive ? '#9F0013' : '#000000'
+                                })
+                            }
+                        >
+                            Character
+                        </NavLink>
+                    </li>
+                    /
+                    <li>
+                        <NavLink 
+                            to='/comics'
+                            end
+                            style={({ isActive }) => ({
+                                    color: isActive ? '#9F0013' : '#000000'
+                                })
+                            }
+                        >
+                            Comics
+                        </NavLink>
+                    </li>
                 </ul>
             </nav>
         </header>

@@ -1,7 +1,10 @@
 import './singleComic.scss';
+import { NavLink } from 'react-router';
 
-const SingleComic = ({setChoosedPage, comicObj}) => {
-    console.log(comicObj)
+const SingleComic = ({comicObj}) => {
+    
+    if(!comicObj){return null}
+
     const {title, description, pageCount, textObjects, prices, thumbnail} = comicObj
     const price = prices[0].price.toFixed(2)
 
@@ -15,7 +18,9 @@ const SingleComic = ({setChoosedPage, comicObj}) => {
                 <p className="single-comic__descr">Language: {textObjects.languages}</p>
                 <div className="single-comic__price">{price} $</div>
             </div>
-            <a href="#" className="single-comic__back" onClick={() => {setChoosedPage('Comics')}}>Back to all</a>
+            <NavLink to="/comics" className="single-comic__back">
+                Back to all
+            </NavLink>
         </div>
     )
 }

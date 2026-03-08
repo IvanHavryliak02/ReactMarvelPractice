@@ -3,6 +3,7 @@ import AppHeader from "../appHeader/AppHeader";
 import MainPage from "../pages/MainPage";
 import ComicsPage from "../pages/ComicsPage";
 import ComicPage from "../pages/ComicPage";
+import Page404 from "../pages/page404";
 import { Routes, Route } from "react-router";
 
 function App(){
@@ -18,6 +19,7 @@ function App(){
                     <Route index element={<MainPage setCharId={setCharId} charId={charId}/>}/>
                     <Route path="comics" element={<ComicsPage setComicObj={setComicObj}/>}/>
                     <Route path="comic" element={<ComicPage comicObj={comicObj}/>}/>
+                    <Route path="*" element={<Page404/>}/>
                 </Routes>
             </main>
         </div>

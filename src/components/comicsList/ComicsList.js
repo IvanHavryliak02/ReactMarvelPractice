@@ -15,7 +15,6 @@ const ComicsList = ({setComicObj}) => {
 
     useEffect(() => {
         serviceInit(() => {
-            createComicsList()
             setLastId(8)
         }, 'ComicsList')
     }, [])

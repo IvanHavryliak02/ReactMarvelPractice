@@ -1,12 +1,12 @@
 import AppBanner from '../appBanner/AppBanner';
-import SingleComic from '../singleComic/SingleComic';
+import SingleItemDesc from '../singleItemDesc/SingleItemDesc';
 
 
-export default function ComicPage({comicObj}) {
+export default function ComicPage({itemObj}) {
     return (
         <>
             <AppBanner/>
-            <SingleComic comicObj={comicObj}/>
+            <SingleItemDesc itemObj={itemObj}/>
         </>
     )
 }

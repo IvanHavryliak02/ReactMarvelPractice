@@ -5,7 +5,7 @@ import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import decoration from '../../resources/img/vision.png'
 
 
-function MainPage({setCharId, charId}) {
+function MainPage({setCharId, charId, setFindedCharObj}) {
     return (
         <>
             <ErrorBoundary>
@@ -14,7 +14,7 @@ function MainPage({setCharId, charId}) {
             
             <div className="char__content">
                 <CharList onChoosedCharact={setCharId} charId={charId}/>
-                <CharInfo charId={charId}/>
+                <CharInfo charId={charId} setFindedCharObj={setFindedCharObj}/>
             </div>
             <img className="bg-decoration" src={decoration} alt="vision"/>
         </>

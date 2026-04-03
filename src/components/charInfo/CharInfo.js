@@ -4,8 +4,9 @@ import './charInfo.scss';
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
 import useMarvelService from '../../services/useMarvelService';
+import FindCharacter from '../findCharacter/FindCharacter';
 
-function CharInfo({charId}) {
+function CharInfo({charId, setFindedCharObj}) {
 
     const [character, setCharacter] = useState(null)
     const {serviceInit, serviceRef, loading, error} = useMarvelService()
@@ -27,10 +28,14 @@ function CharInfo({charId}) {
     const loadingComp = loading ? <Spinner/> : null 
     const errorComp = error  ? <Error/> : null   
     return (
-        <div className="char__info">
-            {content}
-            {loadingComp}
-            {errorComp}
+        
+        <div className="char__container">
+            <div className="char__info">
+                {content}
+                {loadingComp}
+                {errorComp}
+            </div>
+            <FindCharacter setFindedCharObj={setFindedCharObj}/>
         </div>
     )
 

@@ -32,11 +32,10 @@ export default function useMarvelService() {
         }
         await _loadingPromise;
         
-        return {chooseRandCharact, getEntityById}
+        return {chooseRandCharact, getEntityById, findCharByName}
 
         function startPromise(url){
-            return getDataFromAPI(url)
-            .then(res => res)
+            return getDataFromAPI(url).then(res => res)
         }
     }
 
@@ -85,6 +84,17 @@ export default function useMarvelService() {
             return null;
         }
         return APIRes[id-1];
+    }
+
+    function findCharByName(charName){
+        if(_APIData){
+            for(let value of _APIData.characters){
+                if(charName.toLowerCase() === value.name.toLowerCase()){
+                    return value
+                }
+                console.log('iteration')
+            }
+        }
     }
 
     return {serviceInit, serviceRef, loading, error}

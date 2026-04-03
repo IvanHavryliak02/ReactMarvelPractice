@@ -10,15 +10,17 @@ function App(){
 
     const [charId, setCharId] = useState(1);
     const [comicObj, setComicObj] =  useState(null);
+    const [findedCharObj, setFindedCharObj] = useState(null);
 
     return (
         <div className="app">
             <AppHeader/>
             <main>
                 <Routes>
-                    <Route index element={<MainPage setCharId={setCharId} charId={charId}/>}/>
+                    <Route index element={<MainPage setCharId={setCharId} charId={charId} setFindedCharObj={setFindedCharObj}/>}/>
                     <Route path="comics" element={<ComicsPage setComicObj={setComicObj}/>}/>
-                    <Route path="comic" element={<ComicPage comicObj={comicObj}/>}/>
+                    <Route path="comic" element={<ComicPage itemObj={comicObj}/>}/>
+                    <Route path="character" element={<ComicPage itemObj={findedCharObj}/>}/>
                     <Route path="*" element={<Page404/>}/>
                 </Routes>
             </main>

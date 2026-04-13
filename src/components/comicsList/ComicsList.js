@@ -1,13 +1,12 @@
 import './comicsList.scss';
 import { useEffect, useState } from 'react';
 import useMarvelService from '../../services/useMarvelService'
-import Spinner from '../spinner/Spinner';
-import Error from '../error/Error';
+import setContent from './../../utils/setContent'
 import { NavLink } from 'react-router';
 
 const ComicsList = ({setComicObj}) => {
 
-    const {loading, error, serviceRef, serviceInit} = useMarvelService();
+    const {process, serviceRef, serviceInit} = useMarvelService();
     const [comicsList, setComicsList] = useState(null);
     const [lastId, setLastId] = useState(0)
     const [buttonHidden, setButtonHidden] = useState(false)
@@ -80,15 +79,10 @@ const ComicsList = ({setComicObj}) => {
         buttonHidden
     }
 
-    const content = (comicsList && !(loading || error)) ? <Content {...contentProps} /> : null
-    const loadingComp = loading ? <Spinner/> : null 
-    const errorComp = error  ? <Error/> : null 
 
     return (
         <div className="comics__list">
-            {content}
-            {loadingComp}
-            {errorComp}
+            {setContent(process, Content, contentProps)}
         </div>
     )
 }

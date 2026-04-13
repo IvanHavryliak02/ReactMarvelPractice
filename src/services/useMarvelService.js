@@ -10,7 +10,7 @@ let _loadingPromise = null;
 
 export default function useMarvelService() {
 
-    const {loading, error, onErrorOccurred, setLoading, reset, getDataFromAPI} = useAPI();
+    const {process, setProcess, getDataFromAPI} = useAPI();
 
     const serviceRef = useRef(null)
 
@@ -22,10 +22,8 @@ export default function useMarvelService() {
                 startPromise(`${_domain}/characters?apikey=${_key}`),
                 startPromise(`${_domain}/comics?apikey=${_key}`),
             ]).then((resArr) => {
-                console.log('fetching...')
                 _APIData.characters = resArr[0].data.results
                 _APIData.comics = resArr[1].data.results
-                console.log(_APIData)
             }).catch(err => {
                 throw new Error(err)
             })
@@ -41,13 +39,13 @@ export default function useMarvelService() {
 
     async function serviceInit(successCallback, componentName) {
         try{
-            setLoading(true)
+            setProcess('loading')
             serviceRef.current = await request();
             successCallback();
-            reset()
+            setProcess('success')
         }catch(err){
             console.error(`Error during Marvel Service initialistaion in ${componentName} component, ${err}`);
-            onErrorOccurred();
+            setProcess('error')
         }
     }
 
@@ -97,5 +95,5 @@ export default function useMarvelService() {
         }
     }
 
-    return {serviceInit, serviceRef, loading, error}
+    return {serviceInit, serviceRef, process}
 }

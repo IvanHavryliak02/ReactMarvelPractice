@@ -1,8 +1,8 @@
 import { useState, useCallback } from "react";
 
 export default function useAPI(){
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(false)
+
+    const [process, setProcess] = useState('idle')
 
     const getDataFromAPI = useCallback(async (url) => {
         
@@ -17,15 +17,5 @@ export default function useAPI(){
         return APIData
     }, [])
 
-    const onErrorOccurred = () => {
-        setLoading(false);
-        setError(true);
-    }
-
-    const reset = () => {
-        setLoading(false);
-        setError(false);
-    }
-
-    return {loading, error, setLoading, onErrorOccurred, reset, getDataFromAPI}
+    return {process, setProcess, getDataFromAPI}
 }

@@ -1,7 +1,7 @@
 import './charList.scss';
 import { useState, useEffect, useRef} from 'react';
-import Spinner from '../spinner/Spinner'
-import Error from '../error/Error'
+import setContent from './../../utils/setContent'
+
 import useMarvelService from '../../services/useMarvelService';
 
 export default function CharList(props) {
@@ -10,7 +10,7 @@ export default function CharList(props) {
     const [firstCharacterId, setFirstCharacterId] = useState(1)
     const [lastCharacterId, setLastCharacterId] = useState(9)
     const [buttonHidden, setButtonHidden] = useState(false)
-    const {serviceInit, serviceRef, loading, error} = useMarvelService()
+    const {serviceInit, serviceRef, process} = useMarvelService()
 
     const cardRef = useRef(null)
 
@@ -70,23 +70,23 @@ export default function CharList(props) {
         })
     }
 
-    const charactersCards = createCards();
-    const content = (charactersCards.length && !(loading || error)) ? charactersCards : null;
-    const errorComp = error ? <Error/> : null;
-    const loadingComp = loading ? <Spinner/> : null;
     const button = buttonHidden ? null : <Button onClickCallback={createCardsArr}/>
 
     return (
         <div className="char__list">
-            {errorComp}
-            {loadingComp}
-            <ul className="char__grid">
-                {content}    
-            </ul>
+            {setContent(process, Content, {createCards})}
             {button}
         </div>
     )
     
+}
+
+const Content = ({createCards}) => {
+    return (
+        <ul className="char__grid">
+            {createCards()}
+        </ul>
+    )
 }
 
 const Button = ({onClickCallback}) => {
